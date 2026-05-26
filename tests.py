@@ -6,7 +6,7 @@ con = db.connect()
 cur = con.cursor()
 
 cur.execute("INSERT INTO alarms (datetime, name, recurring, recurring_days) VALUES (?, ?, ?, ?)",
-            ("2026-05-26 07:30", "Test", 0, None))
+            ("2026-05-27 09:15", "Test", 0, None))
 
 con.commit()
-con.close()
+con.close() 
