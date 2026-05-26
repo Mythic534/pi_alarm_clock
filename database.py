@@ -12,5 +12,8 @@ recurring_weekdays TEXT,
 enabled INTEGER DEFAULT 1
 );""")
 
+cur.execute("""INSERT INTO alarms (datetime, name, recurring, recurring_weekdays)
+VALUES ('2026-05-26 07:30', 'Test alarm', 0, NULL);""")
+
 con.commit()
 con.close()
