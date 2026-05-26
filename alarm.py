@@ -10,10 +10,17 @@ def manage():
     alarms = db.get_alarms()
 
     print("\nID | DATETIME | NAME | RECURRING | RECURRING_DAYS | ENABLED")
-    print("-" * 60)
+    print("-" * 70)
 
     for a in alarms:
-        print(f"{a[0]} | {a[1]} | {a[2]} | {a[3]} | {a[4]} | {a[5]}")
+        alarm_id = a[0]
+        dt = a[1]
+        name = a[2]
+        recurring = "Yes" if a[3] else "No"
+        recurring_days = a[4] if a[4] else "-"
+        enabled = "On" if a[5] else "Off"
+
+        print(f"{alarm_id} | {dt} | {name} | {recurring} | {recurring_days} | {enabled}")
 
 @app.command()
 def add(time: str):
