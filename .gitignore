@@ -1,2 +1,6 @@
 __pycache__/
+<<<<<<< HEAD
 venv/
+=======
+venv/
+>>>>>>> 5b6e0c2 (database test)
