@@ -10,11 +10,11 @@ def init_db():
     cur.execute("""
     CREATE TABLE IF NOT EXISTS alarms (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
+        enabled INTEGER DEFAULT 1,
         datetime TEXT,
         name TEXT,
         recurring INTEGER,
-        recurring_days TEXT,
-        enabled INTEGER DEFAULT 1
+        recurring_days TEXT
     );
     """)
 
@@ -27,7 +27,7 @@ def init_db():
 def get_alarms():
     con = connect()
     cur = con.cursor()
-    cur.execute("SELECT id, datetime, name, recurring, recurring_days, enabled FROM alarms")
+    cur.execute("SELECT id, enabled, datetime, name, recurring, recurring_days FROM alarms")
     rows = cur.fetchall()
     con.close()
     return rows
