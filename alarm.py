@@ -9,18 +9,18 @@ app = typer.Typer()
 def manage():
     alarms = db.get_alarms()
 
-    print("\nID | DATETIME         | NAME | RECURRING | RECURRING_DAYS | ENABLED")
+    print("\nID | ENABLED | DATETIME         | NAME | RECURRING | RECURRING_DAYS")
     print("-" * 70)
 
     for a in alarms:
         alarm_id = a[0]
-        dt = a[1]
-        name = a[2]
-        recurring = "Yes" if a[3] else "No"
-        recurring_days = a[4] if a[4] else "-"
-        enabled = "On" if a[5] else "Off"
+        enabled = "On" if a[1] else "Off"
+        dt = a[2]
+        name = a[3]
+        recurring = "Yes" if a[4] else "No"
+        recurring_days = a[5] if a[5] else "-"
 
-        print(f"{alarm_id}  | {dt} | {name} | {recurring}        | {recurring_days} | {enabled}")
+        print(f"{alarm_id}  | {enabled} | {dt} | {name} | {recurring} | {recurring_days}")
 
 @app.command()
 def add(time: str):
