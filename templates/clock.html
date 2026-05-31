@@ -2,13 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <!--
-    Fixed 800×480 layout for Pi Touch Display 2 (landscape, Chromium kiosk).
-    Font: DSEG7 Classic (authentic 7-segment LCD) loaded from jsDelivr CDN.
-    If your Pi runs offline, download the woff2 files and change the @font-face
-    src to a local path, e.g. url('/static/fonts/DSEG7Classic-Regular.woff2').
-  -->
-  <meta name="viewport" content="width=800">
+  <meta name="viewport" content="width=1280">
   <title>Clock</title>
   <style>
     /* ── 7-segment font ─────────────────────────────────────────────── */
@@ -21,16 +15,16 @@
 
     /* ── Palette ─────────────────────────────────────────────────────── */
     :root {
-      --cyan:         #00CCEE;   /* primary lit segments          */
-      --cyan-bright:  #33DDFF;   /* glow highlight                */
-      --cyan-mid:     #0099BB;   /* seconds, labels               */
-      --cyan-ghost:   #000D12;   /* "off" segments shown dimly    */
-      --cyan-dim:     #006677;   /* secondary text (date, alarm)  */
-      --bg:           #000000;
-      --alarm-bg:     #00080D;
-      --rule:         #002030;
-      --glow:         rgba(0, 204, 238, 0.35);
-      --glow-s:       rgba(0, 204, 238, 0.20);
+      --cyan:        #00CCEE;
+      --cyan-bright: #33DDFF;
+      --cyan-mid:    #0099BB;
+      --cyan-ghost:  #000D12;
+      --cyan-dim:    #006677;
+      --bg:          #000000;
+      --alarm-bg:    #00080D;
+      --rule:        #002030;
+      --glow:        rgba(0, 204, 238, 0.35);
+      --glow-s:      rgba(0, 204, 238, 0.20);
     }
 
     /* ── Reset ───────────────────────────────────────────────────────── */
@@ -42,7 +36,7 @@
       overflow: hidden;
       background: var(--bg);
       color: var(--cyan);
-      cursor: none;          /* kiosk — no visible pointer */
+      cursor: none;
       user-select: none;
       -webkit-user-select: none;
     }
@@ -62,15 +56,10 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 14px;
-      padding-bottom: 8px;
+      gap: 22px;
+      padding-bottom: 12px;
     }
 
-    /*
-      Ghost segments: "88:88:88" sits in flow and sets the wrapper size.
-      Real time is absolutely positioned on top of it so both share the
-      exact same baseline — no layout shift on digit change.
-    */
     .time-wrapper {
       position: relative;
       display: inline-block;
@@ -83,45 +72,41 @@
       white-space: nowrap;
     }
 
-    /* Ghost — always rendered, sets bounding box */
     .time-ghost {
       color: var(--cyan-ghost);
-      font-size: 126px;
-      letter-spacing: 2px;
+      font-size: 200px;
+      letter-spacing: 3px;
     }
 
-    /* Real time — overlaid, no layout contribution */
     .time-real {
       position: absolute;
       top: 0;
       left: 0;
       color: var(--cyan);
-      font-size: 126px;
-      letter-spacing: 2px;
+      font-size: 200px;
+      letter-spacing: 3px;
       text-shadow:
-        0 0 18px var(--glow),
-        0 0 40px var(--glow-s);
+        0 0 24px var(--glow),
+        0 0 56px var(--glow-s);
     }
 
-    /* Seconds — slightly smaller and dimmer for visual hierarchy */
-    .secs-ghost { font-size: 84px; color: var(--cyan-ghost); }
-    .secs-real  { font-size: 84px; color: var(--cyan-mid);
-                  text-shadow: 0 0 12px var(--glow-s); }
+    .secs-ghost { font-size: 134px; color: var(--cyan-ghost); }
+    .secs-real  { font-size: 134px; color: var(--cyan-mid);
+                  text-shadow: 0 0 16px var(--glow-s); }
 
-    /* Date / day line */
     .date-line {
       font-family: 'Courier New', 'Lucida Console', monospace;
-      font-size: 19px;
-      letter-spacing: 8px;
+      font-size: 28px;
+      letter-spacing: 12px;
       color: var(--cyan-dim);
       text-transform: uppercase;
     }
 
     /* ── Horizontal rule ─────────────────────────────────────────────── */
     .h-rule {
-      width: calc(100% - 56px);
+      width: calc(100% - 90px);
       height: 1px;
-      margin: 0 28px;
+      margin: 0 45px;
       background: var(--rule);
       flex-shrink: 0;
     }
@@ -129,48 +114,44 @@
     /* ── Alarm panel ─────────────────────────────────────────────────── */
     #alarm-section {
       flex-shrink: 0;
-      height: 126px;
+      height: 190px;
       background: var(--alarm-bg);
       display: flex;
       align-items: center;
-      padding: 0 32px;
-      gap: 0;
+      padding: 0 48px;
     }
 
-    /* Rotated "NEXT ALARM" side-label */
     .panel-label {
       font-family: 'Courier New', monospace;
-      font-size: 10px;
-      letter-spacing: 5px;
+      font-size: 14px;
+      letter-spacing: 6px;
       color: var(--rule);
       text-transform: uppercase;
       writing-mode: vertical-rl;
       transform: rotate(180deg);
       flex-shrink: 0;
-      margin-right: 18px;
-    }
-
-    /* Thin vertical divider */
-    .v-rule {
-      width: 1px;
-      height: 70px;
-      background: var(--rule);
-      flex-shrink: 0;
       margin-right: 26px;
     }
 
-    /* Right-hand alarm content */
+    .v-rule {
+      width: 1px;
+      height: 106px;
+      background: var(--rule);
+      flex-shrink: 0;
+      margin-right: 38px;
+    }
+
     .alarm-body {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 6px;
+      gap: 10px;
     }
 
     .alarm-name {
       font-family: 'Courier New', monospace;
-      font-size: 15px;
-      letter-spacing: 5px;
+      font-size: 22px;
+      letter-spacing: 6px;
       color: var(--cyan-dim);
       text-transform: uppercase;
     }
@@ -178,18 +159,17 @@
     .alarm-time-row {
       display: flex;
       align-items: baseline;
-      gap: 20px;
+      gap: 28px;
     }
 
-    /* Mini 7-segment for alarm time */
     .alarm-time-wrap { position: relative; display: inline-block; }
 
     .alarm-t-ghost,
     .alarm-t-real {
       font-family: 'DSEG7', 'Courier New', monospace;
-      font-size: 54px;
+      font-size: 82px;
       line-height: 1;
-      letter-spacing: 1px;
+      letter-spacing: 2px;
     }
 
     .alarm-t-ghost { color: var(--cyan-ghost); }
@@ -199,44 +179,24 @@
       top: 0; left: 0;
       color: var(--cyan);
       text-shadow:
-        0 0 10px var(--glow),
-        0 0 24px var(--glow-s);
+        0 0 14px var(--glow),
+        0 0 32px var(--glow-s);
     }
 
     .alarm-meta {
       font-family: 'Courier New', monospace;
-      font-size: 16px;
-      letter-spacing: 4px;
+      font-size: 24px;
+      letter-spacing: 5px;
       color: var(--cyan-dim);
       text-transform: uppercase;
     }
 
-    /* "No alarms" placeholder */
     .no-alarm {
       font-family: 'Courier New', monospace;
-      font-size: 14px;
-      letter-spacing: 6px;
+      font-size: 18px;
+      letter-spacing: 8px;
       color: var(--cyan-ghost);
       text-transform: uppercase;
-    }
-
-    /* ── Dim overlay ─────────────────────────────────────────────────── */
-    /*
-      Fades to black over 2 s; pointer-events:auto while dimmed so any
-      touch is captured by the wake listener even through the overlay.
-    */
-    #dim-overlay {
-      position: fixed;
-      inset: 0;
-      background: #000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 2s ease;
-      z-index: 100;
-    }
-    #dim-overlay.dimmed {
-      opacity: 1;
-      pointer-events: auto;
     }
   </style>
 </head>
@@ -248,11 +208,9 @@
   <section id="clock-section" aria-label="Current time">
 
     <div class="time-wrapper">
-      <!-- Ghost row (all 8s) — sits in flow, defines wrapper dimensions -->
       <div class="time-ghost" aria-hidden="true">
         88:88<span class="secs-ghost">:88</span>
       </div>
-      <!-- Real time — absolutely overlaid -->
       <div class="time-real" role="timer" aria-live="off">
         <span id="hhmm">--:--</span><span class="secs-real" id="secs">:--</span>
       </div>
@@ -275,57 +233,26 @@
     </div>
   </section>
 
-</div><!-- #app -->
-
-<!-- Dim overlay -->
-<div id="dim-overlay" aria-hidden="true"></div>
+</div>
 
 <script>
   'use strict';
 
-  /* ── Config (injected by Flask) ─────────────────────────────────── */
-  const DIM_AFTER_MS = {{ dim_after_seconds }} * 1000;
-
   /* ── DOM refs ───────────────────────────────────────────────────── */
-  const elHHMM      = document.getElementById('hhmm');
-  const elSecs      = document.getElementById('secs');
-  const elDate      = document.getElementById('date-line');
-  const elAlarm     = document.getElementById('alarm-body');
-  const elOverlay   = document.getElementById('dim-overlay');
+  const elHHMM  = document.getElementById('hhmm');
+  const elSecs  = document.getElementById('secs');
+  const elDate  = document.getElementById('date-line');
+  const elAlarm = document.getElementById('alarm-body');
 
-  /* ── Dim / Wake ─────────────────────────────────────────────────── */
-  let dimTimer  = null;
-  let isDimmed  = false;
-
+  /* ── Touch: stop alarm ──────────────────────────────────────────── */
   function wake() {
-    if (isDimmed) {
-      elOverlay.classList.remove('dimmed');
-      isDimmed = false;
-      post('/api/wake');
-    }
-    resetDimTimer();
+    fetch('/api/wake', { method: 'POST' }).catch(() => {});
   }
 
-  function dim() {
-    elOverlay.classList.add('dimmed');
-    isDimmed = true;
-    post('/api/dim');
-  }
-
-  function resetDimTimer() {
-    clearTimeout(dimTimer);
-    dimTimer = setTimeout(dim, DIM_AFTER_MS);
-  }
-
-  /* Both touch and click so it works with mouse-emulated touch drivers too */
   document.addEventListener('touchstart', wake, { passive: true });
-  document.addEventListener('click',      wake);
+  document.addEventListener('click', wake);
 
   /* ── Helpers ────────────────────────────────────────────────────── */
-  function post(url) {
-    fetch(url, { method: 'POST' }).catch(() => {});
-  }
-
   function esc(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -336,15 +263,12 @@
 
   /* ── Render ─────────────────────────────────────────────────────── */
   function renderClock(data) {
-    /* Time — split into HH:MM and :SS */
     const t = data.time.split(':');
     elHHMM.textContent = t[0] + ':' + t[1];
     elSecs.textContent = ':' + t[2];
 
-    /* Date */
     elDate.textContent = data.day + '  ·  ' + data.date;
 
-    /* Alarm */
     if (data.alarm) {
       const a = data.alarm;
       elAlarm.innerHTML =
@@ -366,13 +290,11 @@
     try {
       const r = await fetch('/api/status');
       if (r.ok) renderClock(await r.json());
-    } catch (_) { /* network blip — just wait for next tick */ }
+    } catch (_) {}
     setTimeout(poll, 500);
   }
 
-  /* ── Init ───────────────────────────────────────────────────────── */
   poll();
-  resetDimTimer();
 </script>
 </body>
 </html>

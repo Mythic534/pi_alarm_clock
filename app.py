@@ -14,6 +14,7 @@ from flask import Flask, render_template, jsonify
 from datetime import datetime
 import logging
 
+
 # ── Import your scheduler ────────────────────────────────────────────────────
 from scheduler import get_next_alarm  # adjust if your module path differs
 
@@ -26,33 +27,12 @@ logging.getLogger('werkzeug').addFilter(_StatusFilter())
 
 app = Flask(__name__)
 
-# ── Backlight ────────────────────────────────────────────────────────────────
-# Pi Touch Display 2 uses an I²C LP855x backlight controller.
-# Check   ls /sys/class/backlight/   on your Pi; the path is often:
-#   /sys/class/backlight/10-0045/brightness   (Display 2)
-#   /sys/class/backlight/rpi_backlight/brightness  (original display)
-BACKLIGHT_PATH   = "/sys/class/backlight/10-0045/brightness"
-BACKLIGHT_BRIGHT = 200   # 0–255, normal brightness
-BACKLIGHT_DIM    = 12    # dim-to level after inactivity
-
-
-def _set_backlight(level: int) -> None:
-    """Write brightness to sysfs. Silently skips on non-Pi hardware."""
-    try:
-        with open(BACKLIGHT_PATH, "w") as fh:
-            fh.write(str(max(0, min(255, level))))
-    except OSError:
-        pass
-
 
 # ── Routes ───────────────────────────────────────────────────────────────────
 
 @app.route("/")
 def index():
-    return render_template(
-        "clock.html",
-        dim_after_seconds=30,   # seconds of inactivity before screen dims
-    )
+    return render_template("clock.html")
 
 
 @app.route("/api/status")
@@ -90,8 +70,7 @@ def api_status():
 
 @app.route("/api/wake", methods=["POST"])
 def api_wake():
-    """Touch event: restore backlight and silence a sounding alarm."""
-    _set_backlight(BACKLIGHT_BRIGHT)
+    """Touch event: silence a sounding alarm."""
     try:
         from scheduler import stop_alarm   # implement in scheduler.py if needed
         stop_alarm()
@@ -100,16 +79,5 @@ def api_wake():
     return jsonify({"status": "ok"})
 
 
-@app.route("/api/dim", methods=["POST"])
-def api_dim():
-    """Inactivity timeout: reduce backlight."""
-    _set_backlight(BACKLIGHT_DIM)
-    return jsonify({"status": "ok"})
-
-
-# ── Entry point ──────────────────────────────────────────────────────────────
-
 if __name__ == "__main__":
-    _set_backlight(BACKLIGHT_BRIGHT)
-    # threaded=True so polling requests don't block each other
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
