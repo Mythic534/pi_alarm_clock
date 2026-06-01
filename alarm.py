@@ -67,6 +67,7 @@ def disable():
     alarm_id = typer.prompt("Enter ID of alarm to disable")
     db.disable_alarm(alarm_id)
     typer.echo(f"Disabled alarm {alarm_id}")
+    view()
 
 
 @app.command()
@@ -75,6 +76,7 @@ def remove():
     alarm_id = typer.prompt("Enter ID of alarm to remove")
     db.remove_alarm(alarm_id)
     typer.echo(f"Removed alarm {alarm_id}")
+    view()
 
 
 @app.command()
