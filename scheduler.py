@@ -13,6 +13,7 @@ def next_occurrence(alarm):
         return dt
 
     today = datetime.datetime.now()
+    grace = datetime.timedelta(seconds=25)
     candidates = []
 
     for day in alarm[5].split(","):
@@ -29,7 +30,7 @@ def next_occurrence(alarm):
         )
 
         # If alarm time has already passed today, move to the next week
-        if candidate <= today:
+        if candidate <= today - grace:
             candidate += datetime.timedelta(days=7)
 
         candidates.append(candidate)
