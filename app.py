@@ -10,12 +10,13 @@ Assumes scheduler.py exposes:
                        (implement as needed — missing function is handled gracefully)
 """
 
+import threading
 from flask import Flask, render_template, jsonify
 from datetime import datetime
 import logging
-import subprocess
 
-from scheduler import get_next_alarm
+from scheduler import get_next_alarm, run_scheduler
+from player import player
 
 class _StatusFilter(logging.Filter):
     """Filter out log spam."""
@@ -37,6 +38,7 @@ def index():
 @app.route("/api/status")
 def api_status():
     """Polled every 500 ms by the frontend to refresh time and alarm."""
+
     now   = datetime.now()
     alarm = None
 
@@ -55,9 +57,12 @@ def api_status():
 
 @app.route("/api/wake", methods=["POST"])
 def api_wake():
-    subprocess.run(["pkill", "-f", "mpg123"], capture_output=True)
+    player.stop_alarm()
     return jsonify({"status": "ok"})
 
 
 if __name__ == "__main__":
+    
+    scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+    scheduler_thread.start()
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)

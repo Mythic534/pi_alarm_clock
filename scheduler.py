@@ -13,7 +13,6 @@ def next_occurrence(alarm):
         return dt
 
     today = datetime.datetime.now()
-    grace = datetime.timedelta(seconds=25)
     candidates = []
 
     for day in alarm[5].split(","):
@@ -30,7 +29,7 @@ def next_occurrence(alarm):
         )
 
         # If alarm time has already passed today, move to the next week
-        if candidate <= today - grace:
+        if candidate <= today:
             candidate += datetime.timedelta(days=7)
 
         candidates.append(candidate)
@@ -67,7 +66,7 @@ def get_next_alarm():
 
 def alarm_due(alarm):
     now = datetime.datetime.now()
-    return 0 <= (now - alarm['datetime']).total_seconds() <= 20
+    return 0 <= (alarm['datetime'] - now).total_seconds() <= 11
 
 
 def check_alarm():
@@ -76,23 +75,13 @@ def check_alarm():
     next_alarm = get_next_alarm()
     if next_alarm and alarm_due(next_alarm):
         player.sound_alarm()
-        time.sleep(20)
+        time.sleep(12)
 
-
-"""def run_scheduler():
-    while True:
-        check_alarm()
-        time.sleep(10)
-"""
-import traceback
 
 def run_scheduler():
     while True:
-        try:
-            check_alarm()
-        except Exception:
-            traceback.print_exc()
-        time.sleep(10)
+        check_alarm()
+        time.sleep(5)
 
 
 if __name__ == "__main__":
