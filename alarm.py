@@ -10,7 +10,7 @@ app = typer.Typer()
 def manage():
     alarms = db.get_alarms()
 
-    print("\nID | ENABLED  | DATETIME         | NAME | RECURRING  | RECURRING_DAYS")
+    print("\nID    | ENABLED  | DATETIME         | NAME | RECURRING  | RECURRING_DAYS")
     print("-" * 70)
 
     for a in alarms:
@@ -21,7 +21,7 @@ def manage():
         recurring = "Yes" if a[4] else "No "
         recurring_days = a[5] if a[5] else "-"
 
-        print(f"{alarm_id}  | {enabled}      | {dt} | {name} | {recurring}        | {recurring_days}")
+        print(f"{alarm_id:04d}  | {enabled}      | {dt} | {name} | {recurring}        | {recurring_days}")
 
     print("\n")
 
