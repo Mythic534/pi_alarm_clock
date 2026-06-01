@@ -11,7 +11,7 @@ class AlarmPlayer:
 
     def sound_alarm(self):
         if not self.is_playing():
-            self.process = subprocess.Popen(["mpg123", self.audio_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            self.process = subprocess.Popen(["mpg123", self.audio_file])
 
     def stop_alarm(self):
         if self.is_playing():
