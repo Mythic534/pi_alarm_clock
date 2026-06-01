@@ -32,7 +32,8 @@ def add():
     view()
 
     name = typer.prompt("Alarm name")
-    recurring = typer.confirm("Recurring alarm? True/False", default=False)
+    recurring = typer.confirm("Recurring alarm?", default=False)
+    recurring_days = None
     if recurring:
         recurring_days = typer.prompt("Recurring days (comma separated, e.g. Mon,Tue,Wed)")
     date_str = typer.prompt("Alarm date (DD-MM-YYYY) or leave blank for today", default="")
