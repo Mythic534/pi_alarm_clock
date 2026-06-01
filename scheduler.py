@@ -66,7 +66,7 @@ def get_next_alarm():
 
 def alarm_due(alarm):
     now = datetime.datetime.now()
-    return 0 <= (alarm['datetime'] - now).total_seconds() <= 20
+    return 0 <= (now - alarm['datetime']).total_seconds() <= 20
 
 
 def check_alarm():

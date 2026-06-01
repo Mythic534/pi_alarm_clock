@@ -13,8 +13,9 @@ Assumes scheduler.py exposes:
 from flask import Flask, render_template, jsonify
 from datetime import datetime
 import logging
+import threading
 
-from scheduler import get_next_alarm
+from scheduler import get_next_alarm, run_scheduler
 from player import player
 
 class _StatusFilter(logging.Filter):
@@ -64,4 +65,6 @@ def api_wake():
 
 
 if __name__ == "__main__":
+    scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+    scheduler_thread.start()
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
