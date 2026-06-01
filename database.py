@@ -43,10 +43,29 @@ def get_enabled_alarms():
     return rows
 
 
+def add_alarm(dt, name, recurring=False, recurring_days=None):
+    con = connect()
+    cur = con.cursor()
+
+    cur.execute("INSERT INTO alarms (datetime, name, recurring, recurring_days) VALUES (?, ?, ?, ?)",
+                (dt, name, int(recurring), recurring_days))
+    con.commit()
+    con.close()
+
+
 def remove_alarm(alarm_id):
     con = connect()
     cur = con.cursor()
 
     cur.execute("DELETE FROM alarms WHERE id = ?", (alarm_id,))
+    con.commit()
+    con.close()
+
+
+def disable_alarm(alarm_id):
+    con = connect()
+    cur = con.cursor()
+
+    cur.execute("UPDATE alarms SET enabled = 0 WHERE id = ?", (alarm_id,))
     con.commit()
     con.close()
