@@ -1,4 +1,3 @@
-from apscheduler.schedulers.background import BackgroundScheduler
 import datetime
 import time
 
@@ -79,11 +78,9 @@ def check_alarm():
 
 
 def run_scheduler():
-    """Start the background scheduler to check for alarms periodically."""
-
-    scheduler = BackgroundScheduler()
-    scheduler.add_job(check_alarm, 'interval', seconds=10)
-    scheduler.start()
+    while True:
+        check_alarm()
+        time.sleep(10)
 
 
 if __name__ == "__main__":
