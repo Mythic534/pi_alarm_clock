@@ -19,5 +19,8 @@ class AlarmPlayer:
             self.process = None
 
 if __name__ == "__main__":
+    import time
     player = AlarmPlayer("./alarm_sounds/strobe.mp3")
     player.sound_alarm()
+    time.sleep(5)
+    player.stop_alarm()
