@@ -11,7 +11,7 @@ def manage():
     alarms = db.get_alarms()
 
     print("\nID    | ENABLED  | DATETIME         | NAME         | RECURRING  | RECURRING_DAYS")
-    print("-" * 70)
+    print("-" * 80)
 
     for a in alarms:
         alarm_id = a[0]
