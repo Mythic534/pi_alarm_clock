@@ -14,7 +14,8 @@ from flask import Flask, render_template, jsonify
 from datetime import datetime
 import logging
 
-from scheduler import get_next_alarm, stop_alarm
+from scheduler import get_next_alarm
+from player import player
 
 class _StatusFilter(logging.Filter):
     """Filter out log spam."""
@@ -70,7 +71,7 @@ def api_status():
 def api_wake():
     """Touch event: silence a sounding alarm."""
     try:
-        stop_alarm()
+        player.stop_alarm()
     except (ImportError, AttributeError):
         pass
     return jsonify({"status": "ok"})

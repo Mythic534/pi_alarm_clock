@@ -3,8 +3,7 @@ import datetime
 import time
 
 from database import get_enabled_alarms
-
-scheduler = BackgroundScheduler()
+from player import player
 
 
 def next_occurrence(alarm):
@@ -65,10 +64,27 @@ def get_next_alarm():
     }
 
 
-def stop_alarm():
-    """Stop the currently sounding alarm."""
-    pass
+def alarm_due(alarm):
+    now = datetime.datetime.now()
+    return 0 <= (alarm['datetime'] - now).total_seconds() <= 20
+
+
+def check_alarm():
+    """Check if any alarm is due and trigger it."""
+
+    next_alarm = get_next_alarm()
+    if next_alarm and alarm_due(next_alarm):
+        player.sound_alarm()
+        time.sleep(20)
+
+
+def run_scheduler():
+    """Start the background scheduler to check for alarms periodically."""
+
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(check_alarm, 'interval', seconds=10)
+    scheduler.start()
 
 
 if __name__ == "__main__":
-    print(get_next_alarm())
+    run_scheduler()
