@@ -3,6 +3,7 @@ import sqlite3
 def connect():
     return sqlite3.connect("alarms.db")
 
+
 def init_db():
     con = connect()
     cur = con.cursor()
@@ -21,13 +22,22 @@ def init_db():
     con.commit()
     con.close()
 
-"""cur.execute("INSERT INTO alarms (datetime, name, recurring, recurring_days) VALUES (?, ?, ?, ?)",
-            ("2026-05-26 07:30", "Test", 0, None))"""
 
 def get_alarms():
     con = connect()
     cur = con.cursor()
+
     cur.execute("SELECT id, enabled, datetime, name, recurring, recurring_days FROM alarms")
+    rows = cur.fetchall()
+    con.close()
+    return rows
+
+
+def get_enabled_alarms():
+    con = connect()
+    cur = con.cursor()
+
+    cur.execute("SELECT id, enabled, datetime, name, recurring, recurring_days FROM alarms WHERE enabled = 1")
     rows = cur.fetchall()
     con.close()
     return rows

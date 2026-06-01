@@ -14,9 +14,7 @@ from flask import Flask, render_template, jsonify
 from datetime import datetime
 import logging
 
-
-# ── Import your scheduler ────────────────────────────────────────────────────
-from scheduler import get_next_alarm  # adjust if your module path differs
+from scheduler import get_next_alarm, stop_alarm
 
 class _StatusFilter(logging.Filter):
     """Filter out log spam."""
@@ -72,7 +70,6 @@ def api_status():
 def api_wake():
     """Touch event: silence a sounding alarm."""
     try:
-        from scheduler import stop_alarm   # implement in scheduler.py if needed
         stop_alarm()
     except (ImportError, AttributeError):
         pass
