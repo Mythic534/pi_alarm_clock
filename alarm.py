@@ -10,14 +10,14 @@ app = typer.Typer()
 def manage():
     alarms = db.get_alarms()
 
-    print("\nID    | ENABLED  | DATETIME         | NAME  | RECURRING  | RECURRING_DAYS")
+    print("\nID    | ENABLED  | DATETIME         | NAME         | RECURRING  | RECURRING_DAYS")
     print("-" * 70)
 
     for a in alarms:
         alarm_id = a[0]
         enabled = "On " if a[1] else "Off"
         dt = a[2]
-        name = a[3]
+        name = f"{a[3][:12]:<12}"
         recurring = "Yes" if a[4] else "No "
         recurring_days = a[5] if a[5] else "-"
 
