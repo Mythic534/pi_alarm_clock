@@ -33,6 +33,7 @@ def add():
 
     name = typer.prompt("Alarm name")
     recurring = typer.confirm("Recurring alarm?", default=False)
+
     recurring_days = None
     if recurring:
         recurring_days = typer.prompt("Recurring days (comma separated, e.g. Mon,Tue,Wed)")
@@ -40,14 +41,10 @@ def add():
     else:
         date_str = typer.prompt("Alarm date (DD-MM-YYYY) or leave blank for today", default="")
         date = datetime.today() if date_str.strip() == "" else datetime.strptime(date_str, "%d-%m-%Y")
+
     time_str = typer.prompt("Alarm time (HH:MM)")
 
     try:
-        if date_str.strip() == "":
-            date = datetime.today()
-        else:
-            date = datetime.strptime(date_str, "%d-%m-%Y")
-
         alarm_dt = datetime.strptime(f"{date.strftime('%Y-%m-%d')} {time_str}", "%Y-%m-%d %H:%M")
     except ValueError as e:
         typer.echo(f"Invalid date or time: {e}")
