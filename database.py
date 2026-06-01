@@ -41,3 +41,12 @@ def get_enabled_alarms():
     rows = cur.fetchall()
     con.close()
     return rows
+
+
+def remove_alarm(alarm_id):
+    con = connect()
+    cur = con.cursor()
+
+    cur.execute("DELETE FROM alarms WHERE id = ?", (alarm_id,))
+    con.commit()
+    con.close()

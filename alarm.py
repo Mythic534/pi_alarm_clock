@@ -42,7 +42,9 @@ def disable():
 
 @app.command()
 def remove():
-    print(f"Removing alarms")
     manage()
+    alarm_id = typer.prompt("Enter ID of alarm to remove")
+    db.remove_alarm(alarm_id)
+    print(f"Removed alarm {alarm_id}")
 
 app()
