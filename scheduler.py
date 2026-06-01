@@ -38,7 +38,7 @@ def next_occurrence(alarm):
 
 
 def get_next_alarm():
-    """Return the next scheduled alarm as a dict with keys: name, time, day, date."""
+    """Return the next scheduled alarm as a dict with keys: name, time, day, date, datetime."""
 
     alarms = get_enabled_alarms()
 
@@ -60,6 +60,7 @@ def get_next_alarm():
         "time": alarm_dt.strftime("%H:%M"),
         "day":  alarm_dt.strftime("%a").upper(),
         "date": alarm_dt.strftime("%d %b %Y").upper(),
+        "datetime": alarm_dt
     }
 
 

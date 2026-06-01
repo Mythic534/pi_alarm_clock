@@ -21,7 +21,7 @@ def manage():
         recurring = "Yes" if a[4] else "No "
         recurring_days = a[5] if a[5] else "-"
 
-        print(f"{alarm_id}  | {enabled}      | {dt} | {name} | {recurring}        | {recurring_days}")
+        print(f"{alarm_id}  | {enabled}      | {dt} | {name} | {recurring}        | {recurring_days}\n")
 
 @app.command()
 def add(time: str):

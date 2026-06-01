@@ -41,21 +41,7 @@ def api_status():
     alarm = None
 
     try:
-        raw = get_next_alarm()
-        if raw is not None:
-            if hasattr(raw, "next_run_time") and raw.next_run_time:
-                # APScheduler Job object
-                nrt   = raw.next_run_time
-                label = raw.name or raw.id or "Alarm"
-                alarm = {
-                    "name": label,
-                    "time": nrt.strftime("%H:%M"),
-                    "day":  nrt.strftime("%a").upper(),
-                    "date": nrt.strftime("%d %b %Y").upper(),
-                }
-            elif isinstance(raw, dict):
-                # Caller already built a dict — use it directly
-                alarm = raw
+        alarm = get_next_alarm()
     except Exception as exc:
         app.logger.warning("get_next_alarm() raised: %s", exc)
 

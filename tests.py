@@ -19,7 +19,7 @@ cur.execute("INSERT INTO alarms (datetime, name, recurring, recurring_days) VALU
 
 """
 cur.execute("INSERT INTO alarms (datetime, name, recurring, recurring_days) VALUES (?, ?, ?, ?)",
-            ("2026-06-05 01:00", "Test4", 1, "Mon"))
+            ("2026-06-05 02:20", "Test4", 1, "Mon"))
 
 
 con.commit()
