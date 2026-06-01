@@ -36,7 +36,10 @@ def add():
     recurring_days = None
     if recurring:
         recurring_days = typer.prompt("Recurring days (comma separated, e.g. Mon,Tue,Wed)")
-    date_str = typer.prompt("Alarm date (DD-MM-YYYY) or leave blank for today", default="")
+        date = datetime.today()
+    else:
+        date_str = typer.prompt("Alarm date (DD-MM-YYYY) or leave blank for today", default="")
+        date = datetime.today() if date_str.strip() == "" else datetime.strptime(date_str, "%d-%m-%Y")
     time_str = typer.prompt("Alarm time (HH:MM)")
 
     try:
