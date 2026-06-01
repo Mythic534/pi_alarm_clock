@@ -78,9 +78,19 @@ def check_alarm():
         time.sleep(20)
 
 
-def run_scheduler():
+"""def run_scheduler():
     while True:
         check_alarm()
+        time.sleep(10)
+"""
+import traceback
+
+def run_scheduler():
+    while True:
+        try:
+            check_alarm()
+        except Exception:
+            traceback.print_exc()
         time.sleep(10)
 
 

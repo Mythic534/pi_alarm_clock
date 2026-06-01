@@ -56,15 +56,22 @@ def api_status():
 
 @app.route("/api/wake", methods=["POST"])
 def api_wake():
-    """Touch event: silence a sounding alarm."""
-    try:
-        player.stop_alarm()
-    except (ImportError, AttributeError):
-        pass
+    player.stop_alarm()
     return jsonify({"status": "ok"})
 
 
+def _scheduler_watchdog():
+    import time
+    while True:
+        try:
+            run_scheduler()
+        except Exception:
+            import traceback
+            traceback.print_exc()
+        time.sleep(1)
+
 if __name__ == "__main__":
-    scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
+    scheduler_thread = threading.Thread(target=_scheduler_watchdog, daemon=True)
     scheduler_thread.start()
+
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
