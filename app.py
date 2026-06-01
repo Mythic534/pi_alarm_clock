@@ -13,10 +13,9 @@ Assumes scheduler.py exposes:
 from flask import Flask, render_template, jsonify
 from datetime import datetime
 import logging
-import threading
+import subprocess
 
-from scheduler import get_next_alarm, run_scheduler
-from player import player
+from scheduler import get_next_alarm
 
 class _StatusFilter(logging.Filter):
     """Filter out log spam."""
@@ -56,22 +55,9 @@ def api_status():
 
 @app.route("/api/wake", methods=["POST"])
 def api_wake():
-    player.stop_alarm()
+    subprocess.run(["pkill", "-f", "mpg123"], capture_output=True)
     return jsonify({"status": "ok"})
 
 
-def _scheduler_watchdog():
-    import time
-    while True:
-        try:
-            run_scheduler()
-        except Exception:
-            import traceback
-            traceback.print_exc()
-        time.sleep(1)
-
 if __name__ == "__main__":
-    scheduler_thread = threading.Thread(target=_scheduler_watchdog, daemon=True)
-    scheduler_thread.start()
-
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)
