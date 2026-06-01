@@ -64,24 +64,30 @@ def get_next_alarm():
     }
 
 
-def alarm_due(alarm):
-    now = datetime.datetime.now()
-    return 0 <= (alarm['datetime'] - now).total_seconds() <= 11
-
-
-def check_alarm():
-    """Check if any alarm is due and trigger it."""
-
-    next_alarm = get_next_alarm()
-    if next_alarm and alarm_due(next_alarm):
-        player.sound_alarm()
-        time.sleep(12)
-
-
 def run_scheduler():
+
+    last_fired_dt = None
     while True:
-        check_alarm()
-        time.sleep(5)
+
+        next_alarm = get_next_alarm()
+        if next_alarm:
+            seconds_until = (next_alarm['datetime'] - datetime.datetime.now()).total_seconds()
+
+            if -3 <= seconds_until <= 1:
+                if last_fired_dt != next_alarm['datetime']:
+                    last_fired_dt = next_alarm['datetime']
+                    player.sound_alarm()
+                    time.sleep(20)
+
+            elif seconds_until < -3:
+                time.sleep(5)
+
+            else:
+                time.sleep(min(seconds_until - 1, 30))
+
+        else:
+            last_fired_dt = None
+            time.sleep(30)
 
 
 if __name__ == "__main__":
