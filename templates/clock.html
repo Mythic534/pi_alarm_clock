@@ -255,21 +255,11 @@
 <script>
   'use strict';
 
-  /* ── DOM refs ───────────────────────────────────────────────────── */
   const elHHMM  = document.getElementById('hhmm');
   const elSecs  = document.getElementById('secs');
   const elDate  = document.getElementById('date-line');
   const elAlarm = document.getElementById('alarm-body');
 
-  /* ── Touch: stop alarm ──────────────────────────────────────────── */
-  function wake() {
-    fetch('/api/wake', { method: 'POST' }).catch(() => {});
-  }
-
-  document.addEventListener('touchstart', wake, { passive: true });
-  document.addEventListener('click', wake);
-
-  /* ── Helpers ────────────────────────────────────────────────────── */
   function esc(str) {
     return String(str)
       .replace(/&/g, '&amp;')
@@ -278,12 +268,10 @@
       .replace(/"/g, '&quot;');
   }
 
-  /* ── Render ─────────────────────────────────────────────────────── */
   function renderClock(data) {
     const t = data.time.split(':');
     elHHMM.textContent = t[0] + ':' + t[1];
     elSecs.textContent = ':' + t[2];
-
     elDate.textContent = data.day + '  ·  ' + data.date;
 
     if (data.alarm) {
@@ -302,7 +290,6 @@
     }
   }
 
-  /* ── Poll /api/status every 500 ms ─────────────────────────────── */
   async function poll() {
     try {
       const r = await fetch('/api/status');
@@ -319,6 +306,11 @@
   let dimTimer = null;
   let isDimmed = false;
 
+  function resetDimTimer() {
+    clearTimeout(dimTimer);
+    dimTimer = setTimeout(dim, DIM_AFTER_MS);
+  }
+
   function dim() {
     elOverlay.classList.add('dimmed');
     isDimmed = true;
@@ -330,17 +322,7 @@
       isDimmed = false;
     }
     fetch('/api/wake', { method: 'POST' }).catch(() => {});
-    clearTimeout(dimTimer);
-    dimTimer = setTimeout(dim, DIM_AFTER_MS);
-  }
-
-  document.addEventListener('touchstart', wake, { passive: true });
-  document.addEventListener('click', wake);
-  resetDimTimer();
-
-  function resetDimTimer() {
-    clearTimeout(dimTimer);
-    dimTimer = setTimeout(dim, DIM_AFTER_MS);
+    resetDimTimer();
   }
 
   resetDimTimer();
@@ -348,9 +330,10 @@
   function wake() {
     fetch('/api/wake', { method: 'POST' }).catch(() => {});
   }
+  {% endif %}
+
   document.addEventListener('touchstart', wake, { passive: true });
   document.addEventListener('click', wake);
-  {% endif %}
 
 </script>
 </body>
