@@ -29,6 +29,13 @@ logging.getLogger('werkzeug').addFilter(_StatusFilter())
 app = Flask(__name__)
 
 
+def _set_backlight(level):
+    try:
+        with open(config.BACKLIGHT_PATH, "w") as f:
+            f.write(str(level))
+    except OSError:
+        pass
+
 # ── Routes ───────────────────────────────────────────────────────────────────
 
 @app.route("/")
@@ -62,7 +69,14 @@ def api_status():
 
 @app.route("/api/wake", methods=["POST"])
 def api_wake():
+    _set_backlight(config.BACKLIGHT_BRIGHT)
     player.stop_alarm()
+    return jsonify({"status": "ok"})
+
+
+@app.route("/api/dim", methods=["POST"])
+def api_dim():
+    _set_backlight(config.BACKLIGHT_DIM)
     return jsonify({"status": "ok"})
 
 
