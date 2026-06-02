@@ -17,6 +17,7 @@ import logging
 
 from scheduler import get_next_alarm, run_scheduler
 from player import player
+import config
 
 class _StatusFilter(logging.Filter):
     """Filter out log spam."""
@@ -32,7 +33,11 @@ app = Flask(__name__)
 
 @app.route("/")
 def index():
-    return render_template("clock.html")
+    return render_template(
+        "clock.html",
+        auto_dim=config.AUTO_DIM,
+        dim_after_seconds=config.DIM_AFTER_SECONDS
+    )
 
 
 @app.route("/api/status")
@@ -62,7 +67,7 @@ def api_wake():
 
 
 if __name__ == "__main__":
-    
+
     scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
     scheduler_thread.start()
     app.run(host="0.0.0.0", port=5000, debug=False, threaded=True)

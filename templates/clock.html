@@ -60,6 +60,21 @@
       padding-bottom: 12px;
     }
 
+    #dim-overlay {
+    position: fixed;
+    inset: 0;
+    background: #000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+    z-index: 100;
+    }
+
+    #dim-overlay.dimmed {
+        opacity: 0.9;
+        pointer-events: auto;
+    }
+
     .time-wrapper {
       position: relative;
       display: inline-block;
@@ -235,6 +250,8 @@
 
 </div>
 
+<div id="dim-overlay" aria-hidden="true"></div>
+
 <script>
   'use strict';
 
@@ -295,6 +312,46 @@
   }
 
   poll();
+
+  {% if auto_dim %}
+  const DIM_AFTER_MS = {{ dim_after_seconds }} * 1000;
+  const elOverlay = document.getElementById('dim-overlay');
+  let dimTimer = null;
+  let isDimmed = false;
+
+  function dim() {
+    elOverlay.classList.add('dimmed');
+    isDimmed = true;
+  }
+
+  function wake() {
+    if (isDimmed) {
+      elOverlay.classList.remove('dimmed');
+      isDimmed = false;
+    }
+    fetch('/api/wake', { method: 'POST' }).catch(() => {});
+    clearTimeout(dimTimer);
+    dimTimer = setTimeout(dim, DIM_AFTER_MS);
+  }
+
+  document.addEventListener('touchstart', wake, { passive: true });
+  document.addEventListener('click', wake);
+  resetDimTimer();
+
+  function resetDimTimer() {
+    clearTimeout(dimTimer);
+    dimTimer = setTimeout(dim, DIM_AFTER_MS);
+  }
+
+  resetDimTimer();
+  {% else %}
+  function wake() {
+    fetch('/api/wake', { method: 'POST' }).catch(() => {});
+  }
+  document.addEventListener('touchstart', wake, { passive: true });
+  document.addEventListener('click', wake);
+  {% endif %}
+
 </script>
 </body>
 </html>
