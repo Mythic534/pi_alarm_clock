@@ -2,3 +2,4 @@ __pycache__/
 venv/
 alarms.db
 tests.py
+config.py
